@@ -1,0 +1,19 @@
+{
+  "frontend/src/App.tsx": "Main application component with TanStack Router setup including three separate Principal routes (check-in, daily activities, check-out) and admin monitoring route with role-based access control.",
+  "frontend/src/pages/LoginPage.tsx": "Landing page with Internet Identity sign-in button and educational branding featuring emerald/teal gradient theme.",
+  "frontend/src/components/auth/ProfileSetupDialog.tsx": "First-time user profile setup dialog that captures user name and uses the Dedication enum from backend types correctly.",
+  "frontend/src/components/auth/RoleGate.tsx": "Role-based access control wrapper component that uses UserRole enum to conditionally render children or access denied screen.",
+  "frontend/src/components/auth/AccessDeniedScreen.tsx": "Unauthorized access screen with sign-out action for users attempting to access restricted routes.",
+  "frontend/src/components/layout/AppShell.tsx": "Application shell layout with header navigation showing three separate Principal actions (Check-In, Daily Activities, Check-Out) and role-aware menu items with user dropdown.",
+  "frontend/src/pages/PrincipalDailyFormPage.tsx": "Principal-only daily activity submission form with six activity checkboxes, date selection, live KPI preview, and server-side timestamp (client sends placeholder BigInt(0)).",
+  "frontend/src/pages/MonitoringDashboardPage.tsx": "Director/Management dashboard with statistics cards, filtering, tabbed interface showing KPI performance, check-in records, and check-out records across all principals.",
+  "frontend/src/components/kpi/KPIScoreBadge.tsx": "KPI score display component showing total score and per-activity breakdown with color-coded scoring indicators.",
+  "frontend/src/components/monitoring/KPITable.tsx": "Responsive table component displaying daily submissions with per-activity points including \"Qur'anic Parenting Center\" column header and total KPI scores.",
+  "frontend/src/lib/kpi.ts": "KPI calculation utilities with activity definitions including renamed \"Qur'anic Parenting Center\" label, equal-weight point distribution, and preview computation logic.",
+  "frontend/src/hooks/useQueries.ts": "React Query hooks for all backend operations including profile management, role checking, submissions, check-ins, and check-outs with proper invalidation.",
+  "frontend/src/index.css": "Global styles with OKLCH color system using emerald/teal education-friendly palette for light and dark modes.",
+  "frontend/tailwind.config.js": "Tailwind configuration with Inter font, emerald/teal color tokens, custom shadows, and extended design system for education performance tracker theme.",
+  "frontend/src/utils/time.ts": "Utility functions for formatting backend Time (bigint nanoseconds) into readable date/time strings including relative time formatting.",
+  "frontend/src/pages/PrincipalCheckInPage.tsx": "Principal-only check-in page with submit form, server timestamp recording, success/error feedback, and history display of recent check-ins.",
+  "frontend/src/pages/PrincipalCheckOutPage.tsx": "Principal-only check-out page with submit form, server timestamp recording, success/error feedback, and history display of recent check-outs."
+}

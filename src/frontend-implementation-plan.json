@@ -1,0 +1,141 @@
+{
+  "kind": "implementation_plan",
+  "version": "1.0",
+  "title": "Separate Check-in/Check-out submissions UI, server-time timestamp alignment, and QPC label rename",
+  "requirements": [
+    {
+      "id": "REQ-7",
+      "summary": "Add Principal Check-in submission UI and history view using existing backend Check-in capabilities (server timestamp stored by backend).",
+      "acceptanceCriteria": [
+        "Principal users can submit a Check-in event via a dedicated UI action (separate from Daily Activity submission).",
+        "The backend stores the Check-in timestamp using server time (Time.now()), not a client-provided timestamp.",
+        "Principals can fetch and view their own Check-in submissions history (at minimum: most recent Check-in time; optionally a list).",
+        "Director/Management users can fetch Check-in submissions across principals (at minimum: included in admin queries; optionally displayed in the monitoring UI).",
+        "Unauthorized callers (non-Principal for submit; non-Admin for cross-principal reads) are rejected consistently with existing access control patterns."
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/hooks/useQueries.ts",
+          "operation": "modify",
+          "description": "Add react-query hooks for Check-in flows: mutation for adding a Check-in, query for fetching caller Check-ins, and admin query for fetching all Check-ins; ensure errors are surfaced for unauthorized calls. Verify the component's usage instructions before implementing."
+        },
+        {
+          "path": "frontend/src/pages/PrincipalCheckInPage.tsx",
+          "operation": "create",
+          "description": "Create a Principal-only Check-in page with a dedicated submit action (detail text input optional) and success/error feedback; include a simple history section showing most recent (and optionally a list) of the caller's Check-ins using the new query hooks. Verify the component's usage instructions before implementing."
+        },
+        {
+          "path": "frontend/src/pages/MonitoringDashboardPage.tsx",
+          "operation": "modify",
+          "description": "Extend the admin monitoring UI to optionally display Check-in activity across principals by consuming the admin Check-in query hook and rendering a compact summary/list/table without changing KPI scoring. Verify the component's usage instructions before implementing."
+        },
+        {
+          "path": "frontend/src/utils/time.ts",
+          "operation": "create",
+          "description": "Add a small utility to format backend Time (bigint nanoseconds) into readable date/time strings for displaying Check-in history and admin monitoring. Verify the component's usage instructions before implementing."
+        }
+      ]
+    },
+    {
+      "id": "REQ-8",
+      "summary": "Add Principal Check-out submission UI and history view using existing backend Check-out capabilities (server timestamp stored by backend).",
+      "acceptanceCriteria": [
+        "Principal users can submit a Check-out event via a dedicated UI action (separate from Daily Activity submission).",
+        "The backend stores the Check-out timestamp using server time (Time.now()), not a client-provided timestamp.",
+        "Principals can fetch and view their own Check-out submissions history (at minimum: most recent Check-out time; optionally a list).",
+        "Director/Management users can fetch Check-out submissions across principals (at minimum: included in admin queries; optionally displayed in the monitoring UI).",
+        "Unauthorized callers (non-Principal for submit; non-Admin for cross-principal reads) are rejected consistently with existing access control patterns."
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/hooks/useQueries.ts",
+          "operation": "modify",
+          "description": "Add react-query hooks for Check-out flows: mutation for adding a Check-out, query for fetching caller Check-outs, and admin query for fetching all Check-outs; ensure errors are surfaced for unauthorized calls. Verify the component's usage instructions before implementing."
+        },
+        {
+          "path": "frontend/src/pages/PrincipalCheckOutPage.tsx",
+          "operation": "create",
+          "description": "Create a Principal-only Check-out page with a dedicated submit action (detail text input optional) and success/error feedback; include a history section showing most recent (and optionally a list) of the caller's Check-outs using the new query hooks. Verify the component's usage instructions before implementing."
+        },
+        {
+          "path": "frontend/src/pages/MonitoringDashboardPage.tsx",
+          "operation": "modify",
+          "description": "Extend the admin monitoring UI to optionally display Check-out activity across principals by consuming the admin Check-out query hook and rendering a compact summary/list/table without changing KPI scoring. Verify the component's usage instructions before implementing."
+        },
+        {
+          "path": "frontend/src/utils/time.ts",
+          "operation": "modify",
+          "description": "Reuse/extend the Time formatting utility to support Check-out history and monitoring displays. Verify the component's usage instructions before implementing."
+        }
+      ]
+    },
+    {
+      "id": "REQ-9",
+      "summary": "Update Daily Activity frontend to avoid client timestamp dependence and rename all user-facing “QPC” labels to “Qur’anic Parenting Center” while keeping underlying keys/scoring unchanged.",
+      "acceptanceCriteria": [
+        "When a Daily Activity submission is created, the stored timestamp reflects server time at submission (backend Time.now()), regardless of any client-provided value.",
+        "The KPI scoring remains equal-weighted across 6 activities totaling 100 points/day, unchanged from current behavior.",
+        "All user-facing labels that currently show “QPC” are updated to “Qur’anic Parenting Center” (including the activity checklist and KPI breakdown displays where applicable).",
+        "No existing monitoring calculations break due to the label change (i.e., the underlying activity key remains compatible with current computations)."
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/pages/PrincipalDailyFormPage.tsx",
+          "operation": "modify",
+          "description": "Remove reliance on client-generated timestamps for Daily Activity submissions by no longer setting report.time using Date.now (use a neutral placeholder value so backend server time remains authoritative); keep KPI model/fields unchanged and ensure UI text remains English. Verify the component's usage instructions before implementing."
+        },
+        {
+          "path": "frontend/src/lib/kpi.ts",
+          "operation": "modify",
+          "description": "Update the activity label/description for the existing 'qpc' activity to display “Qur’anic Parenting Center” (and adjust any related wording) while keeping the activity key as 'qpc' and points/scoring logic unchanged. Verify the component's usage instructions before implementing."
+        },
+        {
+          "path": "frontend/src/components/monitoring/KPITable.tsx",
+          "operation": "modify",
+          "description": "Rename the KPI table column header currently shown as “QPC” to “Qur’anic Parenting Center” while keeping the same underlying KPI field mapping so calculations remain compatible. Verify the component's usage instructions before implementing."
+        },
+        {
+          "path": "frontend/src/components/kpi/KPIScoreBadge.tsx",
+          "operation": "modify",
+          "description": "If KPI breakdown labels expose 'qpc' (or 'health' mapping) in a user-facing way, adjust the rendering to show “Qur’anic Parenting Center” where applicable without changing the underlying KPI computation model. Verify the component's usage instructions before implementing."
+        }
+      ]
+    },
+    {
+      "id": "REQ-10",
+      "summary": "Add Principal navigation and routes for three separate submission flows: Check-in, Daily Activities, and Check-out, with role-gated access and feedback per flow.",
+      "acceptanceCriteria": [
+        "The app provides clear navigation for Principal users to reach: Check-in form/action, Daily Activity form, and Check-out form/action.",
+        "Each of the three flows has its own submit button and success/error feedback.",
+        "Existing role-gating remains intact: Principal can access the submission routes; Director/Management cannot access Principal-only submit routes."
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/App.tsx",
+          "operation": "modify",
+          "description": "Register new routes for Principal Check-in and Principal Check-out pages, keeping Daily Activities as its own route; wrap Principal submission routes with the existing RoleGate (allowedRoles: user) so Director/Management cannot access them. Verify the component's usage instructions before implementing."
+        },
+        {
+          "path": "frontend/src/components/layout/AppShell.tsx",
+          "operation": "modify",
+          "description": "Update the Principal navigation to include three clear actions: Check-in, Daily Activities, and Check-out; ensure admin-only navigation remains limited to Monitoring and that Principal-only buttons do not appear for admins. Verify the component's usage instructions before implementing."
+        },
+        {
+          "path": "frontend/src/pages/PrincipalCheckInPage.tsx",
+          "operation": "modify",
+          "description": "Ensure the Check-in page provides its own submit button plus success/error feedback, consistent with the Daily Activities form interaction patterns. Verify the component's usage instructions before implementing."
+        },
+        {
+          "path": "frontend/src/pages/PrincipalDailyFormPage.tsx",
+          "operation": "modify",
+          "description": "Ensure the Daily Activities page remains a standalone submit flow with clear success/error feedback in English (no consolidation with Check-in/Check-out). Verify the component's usage instructions before implementing."
+        },
+        {
+          "path": "frontend/src/pages/PrincipalCheckOutPage.tsx",
+          "operation": "modify",
+          "description": "Ensure the Check-out page provides its own submit button plus success/error feedback, consistent with the Daily Activities form interaction patterns. Verify the component's usage instructions before implementing."
+        }
+      ]
+    }
+  ]
+}

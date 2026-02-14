@@ -1,0 +1,93 @@
+{
+  "kind": "feature_evidence_report",
+  "features": [
+    {
+      "featureId": "feature-add-a-new-check-in-submission-feature-that-is-stored-separately-from-the-existing-daily-activity-submission-where-the-timestamp-is-generated-on-the-backend-server-time-at-the-moment-of-submission",
+      "featureTitle": "Add a new Check-in submission feature that is stored separately from the existing Daily Activity submission, where the timestamp is generated on the backend (server time) at the moment of submission.",
+      "files": [
+        "frontend/src/hooks/useQueries.ts",
+        "frontend/src/pages/MonitoringDashboardPage.tsx",
+        "frontend/src/pages/PrincipalCheckInPage.tsx",
+        "frontend/src/utils/time.ts"
+      ],
+      "components": [
+        "authorization@4.0.0",
+        "core-infrastructure@1.0.2",
+        "shadcn-ui@1.0.0",
+        "build-template-react@1.0.0",
+        "initial-app@1.0.0",
+        "github-export-icp-cli@1.0.0"
+      ],
+      "testIds": [
+        "REQ-7"
+      ],
+      "confidence": "high"
+    },
+    {
+      "featureId": "feature-add-a-new-check-out-submission-feature-that-is-stored-separately-from-the-existing-daily-activity-submission-where-the-timestamp-is-generated-on-the-backend-server-time-at-the-moment-of-submission",
+      "featureTitle": "Add a new Check-out submission feature that is stored separately from the existing Daily Activity submission, where the timestamp is generated on the backend (server time) at the moment of submission.",
+      "files": [
+        "frontend/src/hooks/useQueries.ts",
+        "frontend/src/pages/MonitoringDashboardPage.tsx",
+        "frontend/src/pages/PrincipalCheckOutPage.tsx",
+        "frontend/src/utils/time.ts"
+      ],
+      "components": [
+        "authorization@4.0.0",
+        "core-infrastructure@1.0.2",
+        "shadcn-ui@1.0.0",
+        "build-template-react@1.0.0",
+        "initial-app@1.0.0",
+        "github-export-icp-cli@1.0.0"
+      ],
+      "testIds": [
+        "REQ-8"
+      ],
+      "confidence": "high"
+    },
+    {
+      "featureId": "feature-ensure-the-existing-daily-activity-submission-uses-a-backend-generated-server-timestamp-and-update-the-qpc-activity-label-to-qur-anic-parenting-center-no-kpi-scoring-logic-changes",
+      "featureTitle": "Ensure the existing Daily Activity submission uses a backend-generated server timestamp, and update the QPC activity label to “Qur’anic Parenting Center” (no KPI/scoring logic changes).",
+      "files": [
+        "frontend/src/components/monitoring/KPITable.tsx",
+        "frontend/src/lib/kpi.ts",
+        "frontend/src/pages/PrincipalDailyFormPage.tsx"
+      ],
+      "components": [
+        "authorization@4.0.0",
+        "core-infrastructure@1.0.2",
+        "shadcn-ui@1.0.0",
+        "build-template-react@1.0.0",
+        "initial-app@1.0.0",
+        "github-export-icp-cli@1.0.0"
+      ],
+      "testIds": [
+        "REQ-9"
+      ],
+      "confidence": "high"
+    },
+    {
+      "featureId": "feature-add-navigation-and-routes-so-principals-can-access-three-separate-submission-actions-pages-check-in-daily-activities-and-check-out-each-with-its-own-submit-flow",
+      "featureTitle": "Add navigation and routes so Principals can access three separate submission actions/pages: Check-in, Daily Activities, and Check-out, each with its own submit flow.",
+      "files": [
+        "frontend/src/App.tsx",
+        "frontend/src/components/layout/AppShell.tsx",
+        "frontend/src/pages/PrincipalCheckInPage.tsx",
+        "frontend/src/pages/PrincipalCheckOutPage.tsx",
+        "frontend/src/pages/PrincipalDailyFormPage.tsx"
+      ],
+      "components": [
+        "authorization@4.0.0",
+        "core-infrastructure@1.0.2",
+        "shadcn-ui@1.0.0",
+        "build-template-react@1.0.0",
+        "initial-app@1.0.0",
+        "github-export-icp-cli@1.0.0"
+      ],
+      "testIds": [
+        "REQ-10"
+      ],
+      "confidence": "high"
+    }
+  ]
+}

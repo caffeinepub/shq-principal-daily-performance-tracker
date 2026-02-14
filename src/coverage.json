@@ -1,0 +1,111 @@
+{
+  "kind": "coverage_report",
+  "version": "1.0",
+  "generatedAt": "2026-02-14T05:46:04.491Z",
+  "sources": {
+    "buildRequest": true,
+    "implementationPlan": true
+  },
+  "requirements": {
+    "total": 4,
+    "implemented": 4,
+    "items": [
+      {
+        "id": "REQ-10",
+        "summary": "Add navigation and routes so Principals can access three separate submission actions/pages: Check-in, Daily Activities, and Check-out, each with its own submit flow.",
+        "status": "implemented",
+        "plannedFiles": [
+          "frontend/src/App.tsx",
+          "frontend/src/components/layout/AppShell.tsx",
+          "frontend/src/pages/PrincipalCheckInPage.tsx",
+          "frontend/src/pages/PrincipalDailyFormPage.tsx",
+          "frontend/src/pages/PrincipalCheckOutPage.tsx"
+        ],
+        "matchedFiles": [
+          "frontend/src/App.tsx",
+          "frontend/src/components/layout/AppShell.tsx",
+          "frontend/src/pages/PrincipalCheckInPage.tsx",
+          "frontend/src/pages/PrincipalDailyFormPage.tsx",
+          "frontend/src/pages/PrincipalCheckOutPage.tsx"
+        ]
+      },
+      {
+        "id": "REQ-7",
+        "summary": "Add a new Check-in submission feature that is stored separately from the existing Daily Activity submission, where the timestamp is generated on the backend (server time) at the moment of submission.",
+        "status": "implemented",
+        "plannedFiles": [
+          "frontend/src/hooks/useQueries.ts",
+          "frontend/src/pages/PrincipalCheckInPage.tsx",
+          "frontend/src/pages/MonitoringDashboardPage.tsx",
+          "frontend/src/utils/time.ts"
+        ],
+        "matchedFiles": [
+          "frontend/src/hooks/useQueries.ts",
+          "frontend/src/pages/PrincipalCheckInPage.tsx",
+          "frontend/src/pages/MonitoringDashboardPage.tsx",
+          "frontend/src/utils/time.ts"
+        ]
+      },
+      {
+        "id": "REQ-8",
+        "summary": "Add a new Check-out submission feature that is stored separately from the existing Daily Activity submission, where the timestamp is generated on the backend (server time) at the moment of submission.",
+        "status": "implemented",
+        "plannedFiles": [
+          "frontend/src/hooks/useQueries.ts",
+          "frontend/src/pages/PrincipalCheckOutPage.tsx",
+          "frontend/src/pages/MonitoringDashboardPage.tsx",
+          "frontend/src/utils/time.ts"
+        ],
+        "matchedFiles": [
+          "frontend/src/hooks/useQueries.ts",
+          "frontend/src/pages/PrincipalCheckOutPage.tsx",
+          "frontend/src/pages/MonitoringDashboardPage.tsx",
+          "frontend/src/utils/time.ts"
+        ]
+      },
+      {
+        "id": "REQ-9",
+        "summary": "Ensure the existing Daily Activity submission uses a backend-generated server timestamp, and update the QPC activity label to “Qur’anic Parenting Center” (no KPI/scoring logic changes).",
+        "status": "implemented",
+        "plannedFiles": [
+          "frontend/src/pages/PrincipalDailyFormPage.tsx",
+          "frontend/src/lib/kpi.ts",
+          "frontend/src/components/monitoring/KPITable.tsx",
+          "frontend/src/components/kpi/KPIScoreBadge.tsx"
+        ],
+        "matchedFiles": [
+          "frontend/src/pages/PrincipalDailyFormPage.tsx",
+          "frontend/src/lib/kpi.ts",
+          "frontend/src/components/monitoring/KPITable.tsx"
+        ]
+      }
+    ]
+  },
+  "changedFiles": [
+    "backend/main.mo",
+    "backend/migration.mo",
+    "build-request.json",
+    "build-template/README.md",
+    "feature_evidence.json",
+    "frontend-file-summaries.txt",
+    "frontend-implementation-plan.json",
+    "frontend/src/App.tsx",
+    "frontend/src/backend.d.ts",
+    "frontend/src/backend.ts",
+    "frontend/src/components/layout/AppShell.tsx",
+    "frontend/src/components/monitoring/KPITable.tsx",
+    "frontend/src/declarations/backend.did.d.ts",
+    "frontend/src/declarations/backend.did.js",
+    "frontend/src/hooks/useQueries.ts",
+    "frontend/src/lib/kpi.ts",
+    "frontend/src/pages/MonitoringDashboardPage.tsx",
+    "frontend/src/pages/PrincipalCheckInPage.tsx",
+    "frontend/src/pages/PrincipalCheckOutPage.tsx",
+    "frontend/src/pages/PrincipalDailyFormPage.tsx",
+    "frontend/src/utils/time.ts",
+    "project_state.json",
+    "scratch/component-selection.json",
+    "spec.md",
+    "spec_vs_diff_report.json"
+  ]
+}
