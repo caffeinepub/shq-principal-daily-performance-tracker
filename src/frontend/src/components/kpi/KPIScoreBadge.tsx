@@ -1,6 +1,8 @@
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent } from '@/components/ui/card';
 import { TrendingUp } from 'lucide-react';
+import { ACTIVITIES, getActivityLabel } from '../../lib/kpi';
+import type { KPIConfig } from '../../backend';
 
 interface KPIPreview {
   total: number;
@@ -9,9 +11,10 @@ interface KPIPreview {
 
 interface KPIScoreBadgeProps {
   kpi: KPIPreview;
+  weights?: KPIConfig | null;
 }
 
-export default function KPIScoreBadge({ kpi }: KPIScoreBadgeProps) {
+export default function KPIScoreBadge({ kpi, weights }: KPIScoreBadgeProps) {
   const getScoreColor = (score: number) => {
     if (score >= 80) return 'text-emerald-600 dark:text-emerald-400';
     if (score >= 60) return 'text-teal-600 dark:text-teal-400';
@@ -36,16 +39,21 @@ export default function KPIScoreBadge({ kpi }: KPIScoreBadgeProps) {
         </div>
 
         <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
-          {Object.entries(kpi.breakdown).map(([key, value]) => (
-            <div key={key} className="flex items-center justify-between p-2 bg-white/50 dark:bg-gray-800/50 rounded-md">
-              <span className="text-sm text-muted-foreground capitalize">
-                {key.replace(/([A-Z])/g, ' $1').trim()}
-              </span>
-              <Badge variant="outline" className="ml-2">
-                {value.toFixed(1)}
-              </Badge>
-            </div>
-          ))}
+          {ACTIVITIES.map((activity) => {
+            const value = kpi.breakdown[activity.key] || 0;
+            const label = getActivityLabel(activity.key, weights);
+            
+            return (
+              <div key={activity.key} className="flex items-center justify-between p-2 bg-white/50 dark:bg-gray-800/50 rounded-md">
+                <span className="text-xs font-medium text-muted-foreground truncate mr-2">
+                  {label}
+                </span>
+                <Badge variant="outline" className="font-mono text-xs">
+                  {value.toFixed(1)}
+                </Badge>
+              </div>
+            );
+          })}
         </div>
       </CardContent>
     </Card>

@@ -1,6 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useActor } from './useActor';
-import type { InputProfile, UserProfile, UserRole, DailyReport, Submission, CheckIn, CheckOut } from '../backend';
+import type { InputProfile, UserProfile, UserRole, DailyReport, Submission, CheckIn, CheckOut, UserWithRole, KPIConfig } from '../backend';
 import type { Principal } from '@icp-sdk/core/principal';
 
 export function useGetCallerUserProfile() {
@@ -46,6 +46,19 @@ export function useGetCallerUserRole() {
     queryFn: async () => {
       if (!actor) throw new Error('Actor not available');
       return actor.getCallerUserRole();
+    },
+    enabled: !!actor && !actorFetching,
+  });
+}
+
+export function useIsCallerAdmin() {
+  const { actor, isFetching: actorFetching } = useActor();
+
+  return useQuery<boolean>({
+    queryKey: ['isCallerAdmin'],
+    queryFn: async () => {
+      if (!actor) throw new Error('Actor not available');
+      return actor.isCallerAdmin();
     },
     enabled: !!actor && !actorFetching,
   });
@@ -126,9 +139,9 @@ export function useAddCheckIn() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: async (detail: string) => {
+    mutationFn: async (params: { detail: string; photo: string }) => {
       if (!actor) throw new Error('Actor not available');
-      return actor.addCheckIn(detail);
+      return actor.addCheckIn(params.detail, params.photo);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['checkIns'] });
@@ -203,5 +216,114 @@ export function useGetAllCheckOuts() {
       return actor.getAllCheckOuts();
     },
     enabled: !!actor && !actorFetching,
+  });
+}
+
+// User management hooks (Director-only)
+export function useListUsersWithRoles() {
+  const { actor, isFetching: actorFetching } = useActor();
+
+  return useQuery<UserWithRole[]>({
+    queryKey: ['usersWithRoles'],
+    queryFn: async () => {
+      if (!actor) return [];
+      try {
+        return await actor.listUsersWithRoles();
+      } catch (error: any) {
+        if (error.message?.includes('Unauthorized')) {
+          throw new Error('You do not have permission to view user settings.');
+        }
+        throw error;
+      }
+    },
+    enabled: !!actor && !actorFetching,
+  });
+}
+
+export function useUpdateUserRole() {
+  const { actor } = useActor();
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async (params: { user: Principal; newRole: UserRole }) => {
+      if (!actor) throw new Error('Actor not available');
+      try {
+        return await actor.updateUserRole(params.user, params.newRole);
+      } catch (error: any) {
+        if (error.message?.includes('Unauthorized')) {
+          throw new Error('You do not have permission to update user roles.');
+        }
+        throw error;
+      }
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['usersWithRoles'] });
+      queryClient.invalidateQueries({ queryKey: ['allUserProfiles'] });
+    },
+  });
+}
+
+export function useDeleteUser() {
+  const { actor } = useActor();
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async (user: Principal) => {
+      if (!actor) throw new Error('Actor not available');
+      try {
+        return await actor.deleteUser(user);
+      } catch (error: any) {
+        if (error.message?.includes('Unauthorized')) {
+          throw new Error('You do not have permission to delete users.');
+        }
+        throw error;
+      }
+    },
+    onSuccess: () => {
+      // Invalidate all relevant caches so UI reflects deleted-account state
+      queryClient.invalidateQueries({ queryKey: ['usersWithRoles'] });
+      queryClient.invalidateQueries({ queryKey: ['allUserProfiles'] });
+      queryClient.invalidateQueries({ queryKey: ['allSubmissions'] });
+      queryClient.invalidateQueries({ queryKey: ['allCheckIns'] });
+      queryClient.invalidateQueries({ queryKey: ['allCheckOuts'] });
+    },
+  });
+}
+
+// KPI Config hooks
+export function useGetKPIConfig() {
+  const { actor, isFetching: actorFetching } = useActor();
+
+  return useQuery<KPIConfig>({
+    queryKey: ['kpiConfig'],
+    queryFn: async () => {
+      if (!actor) throw new Error('Actor not available');
+      return actor.getKPIConfig();
+    },
+    enabled: !!actor && !actorFetching,
+  });
+}
+
+export function useUpdateKPIConfig() {
+  const { actor } = useActor();
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async (newConfig: KPIConfig) => {
+      if (!actor) throw new Error('Actor not available');
+      try {
+        return await actor.updateKPIConfig(newConfig);
+      } catch (error: any) {
+        if (error.message?.includes('Unauthorized')) {
+          throw new Error('You do not have permission to update KPI configuration.');
+        }
+        throw error;
+      }
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['kpiConfig'] });
+      queryClient.invalidateQueries({ queryKey: ['submissions'] });
+      queryClient.invalidateQueries({ queryKey: ['allSubmissions'] });
+    },
   });
 }

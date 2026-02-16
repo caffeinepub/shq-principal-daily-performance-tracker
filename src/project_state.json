@@ -1,85 +1,40 @@
 {
   "schemaVersion": "1.0.0",
-  "projectStateVersion": 5,
-  "summary": "Web application \"SHQ Principal Daily Performance Tracker\" to capture principals' daily records via separate submissions (check-in, daily activities, check-out) using server timestamps and automatically convert daily activities into weighted KPI points (total 100 points/day) for monitoring by Directors and Management without narrative reports.",
-  "architectural_notes": [
-    "KPI scoring is activity-based with equal weights; total KPI per day must equal 100 points across the 6 defined activities.",
-    "Add three distinct submissions per day: check-in, daily activities, and check-out (stored as separate records/events).",
-    "All attendance (check-in/check-out) and activity submissions use server-side timestamps (timestamp at submit time).",
-    "Rename activity label 'QPC' to 'Qur’anic Parenting Center' without changing KPI scoring logic."
-  ],
+  "projectStateVersion": 3,
+  "summary": "Project to update KPI feature set: remove Teacher Attendance Check and enhance KPI Daily Activity to be editable by Admin/Director with a 5-item limit.",
+  "architectural_notes": [],
   "known_issues": [],
   "isFixRequest": false,
   "existing_features": [
     {
-      "id": "feature-implement-internet-identity-sign-in-and-a-role-model-with-exactly-three-roles-principal-form-only-director-and-management",
-      "title": "Implement Internet Identity sign-in and a role model with exactly three roles: Principal (form-only), Director, and Management.",
+      "id": "feature-remove-the-teacher-attendance-check-daily-activity-from-the-kpi-daily-activities-feature-so-that-only-5-daily-activities-are-shown-across-the-app-daily-activity-form-kpi-preview-badges-monitoring-kpi-table-and-kpi-weights-card",
+      "title": "Remove the \"Teacher Attendance Check\" daily activity from the KPI Daily Activities feature so that only 5 daily activities are shown across the app (Daily Activity Form, KPI preview/badges, Monitoring KPI table, and KPI weights card).",
       "reqIds": [
         "REQ-1"
       ],
       "version": 1
     },
     {
-      "id": "feature-create-a-principal-daily-activity-submission-form-that-captures-one-day-s-record-containing-the-six-required-activities-briefing-classroom-supervision-teacher-attendance-check-qpc-weekly-liqo-administration",
-      "title": "Create a Principal daily activity submission form that captures one day’s record containing the six required activities: Briefing, Classroom Supervision, Teacher Attendance Check, QPC, Weekly Liqo, Administration.",
+      "id": "feature-update-the-daily-activity-submission-flow-so-it-remains-compatible-with-the-existing-backend-submission-type-while-the-removed-activity-is-no-longer-user-editable-ensure-any-removed-activity-fields-are-always-submitted-as-a-neutral-disabled-value-e-g-rating-0-and-a-safe-string-and-do-not-affect-kpi-previews",
+      "title": "Update the Daily Activity submission flow so it remains compatible with the existing backend submission type while the removed activity is no longer user-editable: ensure any removed-activity fields are always submitted as a neutral/disabled value (e.g., rating 0 and a safe string) and do not affect KPI previews.",
       "reqIds": [
         "REQ-2"
       ],
       "version": 1
     },
     {
-      "id": "feature-automatically-compute-kpi-points-per-submitted-day-with-equal-weights-totaling-100-points-day-across-the-six-activities-and-return-computed-kpi-results-alongside-the-stored-record",
-      "title": "Automatically compute KPI points per submitted day with equal weights totaling 100 points/day across the six activities, and return computed KPI results alongside the stored record.",
+      "id": "feature-allow-both-admin-and-director-roles-to-edit-kpi-daily-activity-configuration-the-5-visible-daily-activity-kpi-items-weights-including-add-edit-capability-within-the-supported-configuration-model-and-ensure-non-admin-director-users-remain-view-only",
+      "title": "Allow both Admin and Director roles to edit KPI Daily Activity configuration (the 5 visible daily activity KPI items/weights), including add/edit capability within the supported configuration model, and ensure non-Admin/Director users remain view-only.",
+      "reqIds": [
+        "REQ-3"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-enforce-the-5-item-limit-at-the-kpi-configuration-level-by-treating-the-removed-activity-s-weight-as-non-editable-and-effectively-disabled-the-system-must-ensure-the-removed-activity-contributes-0-points-and-the-remaining-5-activity-weights-must-total-100",
+      "title": "Enforce the 5-item limit at the KPI configuration level by treating the removed activity's weight as non-editable and effectively disabled: the system must ensure the removed activity contributes 0 points and the remaining 5 activity weights must total 100.",
       "reqIds": [
         "REQ-4"
-      ],
-      "version": 1
-    },
-    {
-      "id": "feature-create-director-management-monitoring-screens-that-show-kpi-performance-metrics-no-narrative-reports-including-daily-totals-and-per-activity-breakdown-with-filters-for-date-range-and-principal",
-      "title": "Create Director/Management monitoring screens that show KPI performance metrics (no narrative reports), including daily totals and per-activity breakdown, with filters for date range and Principal.",
-      "reqIds": [
-        "REQ-5"
-      ],
-      "version": 1
-    },
-    {
-      "id": "feature-apply-a-coherent-visual-theme-across-the-app-colors-typography-layout-suitable-for-an-education-performance-tracker-avoid-blue-purple-as-primary-brand-colors",
-      "title": "Apply a coherent visual theme across the app (colors, typography, layout) suitable for an education performance tracker; avoid blue/purple as primary brand colors.",
-      "reqIds": [
-        "REQ-6"
-      ],
-      "version": 1
-    },
-    {
-      "id": "feature-add-a-new-check-in-submission-feature-that-is-stored-separately-from-the-existing-daily-activity-submission-where-the-timestamp-is-generated-on-the-backend-server-time-at-the-moment-of-submission",
-      "title": "Add a new Check-in submission feature that is stored separately from the existing Daily Activity submission, where the timestamp is generated on the backend (server time) at the moment of submission.",
-      "reqIds": [
-        "REQ-7"
-      ],
-      "version": 1
-    },
-    {
-      "id": "feature-add-a-new-check-out-submission-feature-that-is-stored-separately-from-the-existing-daily-activity-submission-where-the-timestamp-is-generated-on-the-backend-server-time-at-the-moment-of-submission",
-      "title": "Add a new Check-out submission feature that is stored separately from the existing Daily Activity submission, where the timestamp is generated on the backend (server time) at the moment of submission.",
-      "reqIds": [
-        "REQ-8"
-      ],
-      "version": 1
-    },
-    {
-      "id": "feature-ensure-the-existing-daily-activity-submission-uses-a-backend-generated-server-timestamp-and-update-the-qpc-activity-label-to-qur-anic-parenting-center-no-kpi-scoring-logic-changes",
-      "title": "Ensure the existing Daily Activity submission uses a backend-generated server timestamp, and update the QPC activity label to “Qur’anic Parenting Center” (no KPI/scoring logic changes).",
-      "reqIds": [
-        "REQ-9"
-      ],
-      "version": 1
-    },
-    {
-      "id": "feature-add-navigation-and-routes-so-principals-can-access-three-separate-submission-actions-pages-check-in-daily-activities-and-check-out-each-with-its-own-submit-flow",
-      "title": "Add navigation and routes so Principals can access three separate submission actions/pages: Check-in, Daily Activities, and Check-out, each with its own submit flow.",
-      "reqIds": [
-        "REQ-10"
       ],
       "version": 1
     }
@@ -87,57 +42,18 @@
   "new_feature_requests": [
     {
       "id": "AR-1",
-      "summary": "Implement user roles & access: Kepsek (form-only input), Direktur, and Manajemen (monitoring views)",
+      "summary": "Remove/delete the 'Teacher attendance check' feature from the app.",
       "reqIds": [],
       "status": "pending"
     },
     {
       "id": "AR-2",
-      "summary": "Daily activity input form for Kepsek with activities: briefing, supervisi kelas, cek kehadiran guru, QPC, liqo pekan, administrasi",
-      "reqIds": [],
-      "status": "pending"
-    },
-    {
-      "id": "AR-3",
-      "summary": "Automatic KPI calculation: convert submitted activities into KPI points with equal weights totaling 100 points/day across activities",
-      "reqIds": [],
-      "status": "pending"
-    },
-    {
-      "id": "AR-4",
-      "summary": "Director/Management monitoring dashboard to view daily KPI performance metrics without narrative reports",
-      "reqIds": [],
-      "status": "pending"
-    },
-    {
-      "id": "AR-7",
-      "summary": "Persist daily activity records in the Motoko backend and expose query methods for (a) the submitting Principal to read their own submissions and (b) Director/Management to read submissions across Principals.",
-      "reqIds": [
-        "REQ-3"
-      ],
-      "status": "pending"
-    },
-    {
-      "id": "AR-8",
-      "summary": "Add separate 'Absen Masuk' (check-in) submission feature with automatic server timestamp",
-      "reqIds": [],
-      "status": "pending"
-    },
-    {
-      "id": "AR-9",
-      "summary": "Add separate 'Absen Keluar' (check-out) submission feature with automatic server timestamp",
-      "reqIds": [],
-      "status": "pending"
-    },
-    {
-      "id": "AR-10",
-      "summary": "Revise daily activity label: change 'QPC' to 'Qur’anic Parenting Center' (no scoring logic change)",
+      "summary": "In KPI Daily Activity feature, allow Admin and Director roles to add and edit daily activities; limit to maximum 5 items.",
       "reqIds": [],
       "status": "pending"
     }
   ],
-  "gameProjectType": "none",
-  "projectName": "SHQ Principal Daily Performance Tracker",
+  "projectName": "Make KPI Daily Activities configurable to 5 items and remove Teacher Attendance Check (Admin & Director can edit)",
   "clarification_mode": "instant",
   "clarification_rounds": 0
 }

@@ -10,19 +10,34 @@ export type Option<T> = Some<T> | None;
 export interface CheckIn {
     time: Time;
     detail: string;
+    photo?: string;
 }
 export interface PublicProfile {
     name: string;
     dedication: Dedication;
 }
 export type Time = bigint;
-export interface InputProfile {
-    name: string;
-    dedication: Dedication;
+export interface UserWithRole {
+    principal: Principal;
+    role: UserRole;
+    profile?: UserProfile;
 }
-export interface CheckOut {
-    time: Time;
-    detail: string;
+export interface KPIConfig {
+    activity2name: string;
+    activity1weight: number;
+    activity1active: boolean;
+    activity4name: string;
+    activity2weight: number;
+    activity2active: boolean;
+    activity3weight: number;
+    activity1name: string;
+    activity3active: boolean;
+    activity4weight: number;
+    activity3name: string;
+    activity4active: boolean;
+    activity5weight: number;
+    activity5name: string;
+    activity5active: boolean;
 }
 export interface KPITally {
     focus: number;
@@ -31,6 +46,10 @@ export interface KPITally {
     dedication: number;
     energy: number;
     health: number;
+}
+export interface InputProfile {
+    name: string;
+    dedication: Dedication;
 }
 export interface DailyReport {
     focus: string;
@@ -48,6 +67,10 @@ export interface DailyReport {
     dedicationRating: number;
     energy: string;
     health: string;
+}
+export interface CheckOut {
+    time: Time;
+    detail: string;
 }
 export interface Submission {
     kpi: KPITally;
@@ -74,10 +97,11 @@ export enum UserRole {
     guest = "guest"
 }
 export interface backendInterface {
-    addCheckIn(detail: string): Promise<void>;
+    addCheckIn(detail: string, photo: string | null): Promise<void>;
     addCheckOut(detail: string): Promise<void>;
     addSubmission(report: DailyReport, review: string, account: string, reflection: string, relation: number, rating: number): Promise<void>;
     assignCallerUserRole(user: Principal, role: UserRole): Promise<void>;
+    deleteUser(user: Principal): Promise<void>;
     getAllCheckIns(): Promise<Array<[Principal, Array<CheckIn>]>>;
     getAllCheckOuts(): Promise<Array<[Principal, Array<CheckOut>]>>;
     getAllSubmissions(): Promise<Array<[Principal, Array<Submission>]>>;
@@ -86,6 +110,7 @@ export interface backendInterface {
     getCallerUserRole(): Promise<UserRole>;
     getCheckIns(): Promise<Array<CheckIn>>;
     getCheckOuts(): Promise<Array<CheckOut>>;
+    getKPIConfig(): Promise<KPIConfig>;
     getPublicProfile(): Promise<UserProfile>;
     getSubmissionCount(): Promise<bigint>;
     getSubmissions(): Promise<Array<Submission>>;
@@ -93,6 +118,9 @@ export interface backendInterface {
     getUserProfile(user: Principal): Promise<UserProfile | null>;
     getUserSubmissions(user: Principal): Promise<Array<Submission>>;
     isCallerAdmin(): Promise<boolean>;
+    listUsersWithRoles(): Promise<Array<UserWithRole>>;
     saveCallerUserProfile(profile: InputProfile): Promise<void>;
     saveUserProfile(profile: InputProfile): Promise<void>;
+    updateKPIConfig(newConfig: KPIConfig): Promise<void>;
+    updateUserRole(user: Principal, newRole: UserRole): Promise<void>;
 }

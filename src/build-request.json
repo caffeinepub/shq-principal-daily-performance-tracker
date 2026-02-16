@@ -1,111 +1,99 @@
 {
   "kind": "build_request",
-  "title": "Add separate Check-in and Check-out submissions with server timestamps; rename QPC to Qur’anic Parenting Center",
+  "title": "Make KPI Daily Activities configurable to 5 items and remove Teacher Attendance Check (Admin & Director can edit)",
   "priority": "high",
   "requirements": [
     {
-      "id": "REQ-7",
-      "text": "Add a new Check-in submission feature that is stored separately from the existing Daily Activity submission, where the timestamp is generated on the backend (server time) at the moment of submission.",
-      "target": "both",
-      "source": {
-        "messageIds": [
-          "recent-messages"
-        ],
-        "quotes": [
-          "Tambahan terpisah. Timestamp server.",
-          "Buat 3 fitur, fitur 1 absen masuk lalu submit, fitur 2 daily activity lalu submit, dan fitur 3 absen keluar lalu submit. Waktu dibuat automatis"
-        ]
-      },
-      "acceptanceCriteria": [
-        "Principal users can submit a Check-in event via a dedicated UI action (separate from Daily Activity submission).",
-        "The backend stores the Check-in timestamp using server time (Time.now()), not a client-provided timestamp.",
-        "Principals can fetch and view their own Check-in submissions history (at minimum: most recent Check-in time; optionally a list).",
-        "Director/Management users can fetch Check-in submissions across principals (at minimum: included in admin queries; optionally displayed in the monitoring UI).",
-        "Unauthorized callers (non-Principal for submit; non-Admin for cross-principal reads) are rejected consistently with existing access control patterns."
-      ]
-    },
-    {
-      "id": "REQ-8",
-      "text": "Add a new Check-out submission feature that is stored separately from the existing Daily Activity submission, where the timestamp is generated on the backend (server time) at the moment of submission.",
-      "target": "both",
-      "source": {
-        "messageIds": [
-          "recent-messages"
-        ],
-        "quotes": [
-          "Tambahan terpisah. Timestamp server.",
-          "fitur 3 absen keluar lalu submit"
-        ]
-      },
-      "acceptanceCriteria": [
-        "Principal users can submit a Check-out event via a dedicated UI action (separate from Daily Activity submission).",
-        "The backend stores the Check-out timestamp using server time (Time.now()), not a client-provided timestamp.",
-        "Principals can fetch and view their own Check-out submissions history (at minimum: most recent Check-out time; optionally a list).",
-        "Director/Management users can fetch Check-out submissions across principals (at minimum: included in admin queries; optionally displayed in the monitoring UI).",
-        "Unauthorized callers (non-Principal for submit; non-Admin for cross-principal reads) are rejected consistently with existing access control patterns."
-      ]
-    },
-    {
-      "id": "REQ-9",
-      "text": "Ensure the existing Daily Activity submission uses a backend-generated server timestamp, and update the QPC activity label to “Qur’anic Parenting Center” (no KPI/scoring logic changes).",
-      "target": "both",
-      "source": {
-        "messageIds": [
-          "recent-messages"
-        ],
-        "quotes": [
-          "Timestamp server. Sama, tapi QPC tolong direvisi (Qur’anic Parenting Center)"
-        ]
-      },
-      "acceptanceCriteria": [
-        "When a Daily Activity submission is created, the stored timestamp reflects server time at submission (backend Time.now()), regardless of any client-provided value.",
-        "The KPI scoring remains equal-weighted across 6 activities totaling 100 points/day, unchanged from current behavior.",
-        "All user-facing labels that currently show “QPC” are updated to “Qur’anic Parenting Center” (including the activity checklist and KPI breakdown displays where applicable).",
-        "No existing monitoring calculations break due to the label change (i.e., the underlying activity key remains compatible with current computations)."
-      ]
-    },
-    {
-      "id": "REQ-10",
-      "text": "Add navigation and routes so Principals can access three separate submission actions/pages: Check-in, Daily Activities, and Check-out, each with its own submit flow.",
+      "id": "REQ-1",
+      "text": "Remove the \"Teacher Attendance Check\" daily activity from the KPI Daily Activities feature so that only 5 daily activities are shown across the app (Daily Activity Form, KPI preview/badges, Monitoring KPI table, and KPI weights card).",
       "target": "frontend",
       "source": {
         "messageIds": [
-          "recent-messages"
+          "recent-messages-6",
+          "recent-messages-8",
+          "recent-messages-10"
         ],
         "quotes": [
-          "Jadi 3 kali submit",
-          "Tambahan terpisah."
+          "Teacher attendence Check dihapus saja",
+          "Buat daily activity-nya bisa diedit, bagi jadi 5 saja",
+          "Ada di fitur daily actifity KPI. ... Batasi jadi 5 saja."
         ]
       },
       "acceptanceCriteria": [
-        "The app provides clear navigation for Principal users to reach: Check-in form/action, Daily Activity form, and Check-out form/action.",
-        "Each of the three flows has its own submit button and success/error feedback.",
-        "Existing role-gating remains intact: Principal can access the submission routes; Director/Management cannot access Principal-only submit routes."
+        "The Daily Activity Form (/daily-activities) no longer renders an activity named \"Teacher Attendance Check\" and shows exactly 5 activity tiles/checkboxes.",
+        "The Monitoring KPI table no longer renders a column named \"Teacher Attendance Check\" and shows exactly 5 activity columns.",
+        "The KPI weights card (view-only for KepSek, editable for authorized roles) shows exactly 5 activity weight rows.",
+        "No remaining user-facing text mentions \"Teacher Attendance Check\" anywhere in the UI."
+      ]
+    },
+    {
+      "id": "REQ-2",
+      "text": "Update the Daily Activity submission flow so it remains compatible with the existing backend submission type while the removed activity is no longer user-editable: ensure any removed-activity fields are always submitted as a neutral/disabled value (e.g., rating 0 and a safe string) and do not affect KPI previews.",
+      "target": "frontend",
+      "source": {
+        "messageIds": [
+          "recent-messages-8",
+          "recent-messages-10"
+        ],
+        "quotes": [
+          "Buat daily activity-nya bisa diedit, bagi jadi 5 saja",
+          "Ada di fitur daily actifity KPI. ... Batasi jadi 5 saja."
+        ]
+      },
+      "acceptanceCriteria": [
+        "Submitting a Daily Activity report still succeeds without requiring the removed activity, and the computed KPI preview matches the 5 visible activities only.",
+        "After submission, the UI resets only the 5 visible activities (no hidden/removed activity state remains)."
+      ]
+    },
+    {
+      "id": "REQ-3",
+      "text": "Allow both Admin and Director roles to edit KPI Daily Activity configuration (the 5 visible daily activity KPI items/weights), including add/edit capability within the supported configuration model, and ensure non-Admin/Director users remain view-only.",
+      "target": "both",
+      "source": {
+        "messageIds": [
+          "recent-messages-10"
+        ],
+        "quotes": [
+          "admin dan direktur bisa menambah dan mengedit"
+        ]
+      },
+      "acceptanceCriteria": [
+        "Users who are Admin or Director can access an editable KPI configuration UI (inputs + save flow).",
+        "Non-Admin/Director users can view the KPI configuration but cannot enter edit mode or save changes.",
+        "Unauthorized backend calls to update KPI configuration return an authorization error that is surfaced in the UI as an English error message."
+      ]
+    },
+    {
+      "id": "REQ-4",
+      "text": "Enforce the 5-item limit at the KPI configuration level by treating the removed activity's weight as non-editable and effectively disabled: the system must ensure the removed activity contributes 0 points and the remaining 5 activity weights must total 100.",
+      "target": "both",
+      "source": {
+        "messageIds": [
+          "recent-messages-10"
+        ],
+        "quotes": [
+          "Batasi jadi 5 saja."
+        ]
+      },
+      "acceptanceCriteria": [
+        "The KPI weights editor validates totals using only the 5 visible activities (must equal 100 with a small tolerance) and does not block saves due to the hidden/removed weight field.",
+        "On save, the backend persists configuration such that the removed activity's weight is forced to 0 (even if a client attempts to set it non-zero).",
+        "KPI preview/badges/table calculations do not show or include the removed activity as a separate line item, and its contribution is always 0."
       ]
     }
   ],
   "constraints": [
-    "Backend must remain a single-actor Motoko canister with all logic in backend/main.mo; only introduce backend/migration.mo if an actual state migration is required by the implementation.",
-    "Do not edit files under frontend/src/components/ui or any frontend immutablePaths (compose existing UI components instead).",
-    "Use English for all user-facing text in the UI changes introduced by this request."
+    "Backend must remain a single Motoko actor in backend/main.mo; only add backend/migration.mo changes if state shape must change.",
+    "Do not edit files under frontend immutablePaths (e.g., frontend/src/hooks/useInternetIdentity.ts(x), frontend/src/hooks/useActor.ts, frontend/src/main.tsx, frontend/src/components/ui).",
+    "Use English for any user-facing text added or modified by this change."
   ],
   "nonGoals": [
-    "Do not change KPI weighting, the number of activities (6), or the 100-points-per-day total KPI model.",
-    "Do not introduce any third-party authentication beyond Internet Identity.",
-    "Do not add narrative report fields to monitoring (keep monitoring metrics-focused as currently designed)."
+    "Do not introduce new external databases, third-party auth providers, or real-time communication.",
+    "Do not redesign the entire KPI system to support arbitrary dynamic activity schemas beyond the app’s current fixed submission structure.",
+    "Do not change historical submissions data beyond ensuring the removed activity is not displayed and contributes 0 going forward."
   ],
   "imageRequirements": {
     "required": [],
     "edits": []
-  },
-  "userProfileUpdate": {
-    "goalsToAdd": [],
-    "goalsToRemove": [],
-    "preferencesToAdd": [],
-    "preferencesToRemove": [],
-    "miscToAdd": [],
-    "miscToRemove": [],
-    "fieldsToSet": {},
-    "fieldsToDelete": []
   }
 }

@@ -1,4 +1,4 @@
-import { useGetCallerUserRole } from '../../hooks/useQueries';
+import { useGetCallerUserRole, useIsCallerAdmin } from '../../hooks/useQueries';
 import AccessDeniedScreen from './AccessDeniedScreen';
 import { Loader2 } from 'lucide-react';
 import { UserRole } from '../../backend';
@@ -6,10 +6,14 @@ import { UserRole } from '../../backend';
 interface RoleGateProps {
   allowedRoles: UserRole[];
   children: React.ReactNode;
+  requireDirector?: boolean;
 }
 
-export default function RoleGate({ allowedRoles, children }: RoleGateProps) {
-  const { data: role, isLoading } = useGetCallerUserRole();
+export default function RoleGate({ allowedRoles, children, requireDirector = false }: RoleGateProps) {
+  const { data: role, isLoading: roleLoading } = useGetCallerUserRole();
+  const { data: isAdmin, isLoading: adminLoading } = useIsCallerAdmin();
+
+  const isLoading = roleLoading || adminLoading;
 
   if (isLoading) {
     return (
@@ -19,7 +23,13 @@ export default function RoleGate({ allowedRoles, children }: RoleGateProps) {
     );
   }
 
+  // Check basic role access
   if (!role || !allowedRoles.includes(role)) {
+    return <AccessDeniedScreen />;
+  }
+
+  // If Director-only access is required, check isCallerAdmin
+  if (requireDirector && isAdmin !== true) {
     return <AccessDeniedScreen />;
   }
 

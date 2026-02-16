@@ -1,139 +1,119 @@
 {
   "kind": "implementation_plan",
   "version": "1.0",
-  "title": "Separate Check-in/Check-out submissions UI, server-time timestamp alignment, and QPC label rename",
+  "title": "KPI Daily Activities: limit to 5 items, remove Teacher Attendance Check, and enable Admin+Director configuration edits",
   "requirements": [
     {
-      "id": "REQ-7",
-      "summary": "Add Principal Check-in submission UI and history view using existing backend Check-in capabilities (server timestamp stored by backend).",
+      "id": "REQ-1",
+      "summary": "Remove the \"Teacher Attendance Check\" activity and ensure exactly 5 KPI daily activities render consistently across the Daily Activity Form, KPI preview/badges, Monitoring KPI table, and KPI weights card.",
       "acceptanceCriteria": [
-        "Principal users can submit a Check-in event via a dedicated UI action (separate from Daily Activity submission).",
-        "The backend stores the Check-in timestamp using server time (Time.now()), not a client-provided timestamp.",
-        "Principals can fetch and view their own Check-in submissions history (at minimum: most recent Check-in time; optionally a list).",
-        "Director/Management users can fetch Check-in submissions across principals (at minimum: included in admin queries; optionally displayed in the monitoring UI).",
-        "Unauthorized callers (non-Principal for submit; non-Admin for cross-principal reads) are rejected consistently with existing access control patterns."
+        "The Daily Activity Form (/daily-activities) no longer renders an activity named \"Teacher Attendance Check\" and shows exactly 5 activity tiles/checkboxes.",
+        "The Monitoring KPI table no longer renders a column named \"Teacher Attendance Check\" and shows exactly 5 activity columns.",
+        "The KPI weights card (view-only for KepSek, editable for authorized roles) shows exactly 5 activity weight rows.",
+        "No remaining user-facing text mentions \"Teacher Attendance Check\" anywhere in the UI."
       ],
       "file_operations": [
-        {
-          "path": "frontend/src/hooks/useQueries.ts",
-          "operation": "modify",
-          "description": "Add react-query hooks for Check-in flows: mutation for adding a Check-in, query for fetching caller Check-ins, and admin query for fetching all Check-ins; ensure errors are surfaced for unauthorized calls. Verify the component's usage instructions before implementing."
-        },
-        {
-          "path": "frontend/src/pages/PrincipalCheckInPage.tsx",
-          "operation": "create",
-          "description": "Create a Principal-only Check-in page with a dedicated submit action (detail text input optional) and success/error feedback; include a simple history section showing most recent (and optionally a list) of the caller's Check-ins using the new query hooks. Verify the component's usage instructions before implementing."
-        },
-        {
-          "path": "frontend/src/pages/MonitoringDashboardPage.tsx",
-          "operation": "modify",
-          "description": "Extend the admin monitoring UI to optionally display Check-in activity across principals by consuming the admin Check-in query hook and rendering a compact summary/list/table without changing KPI scoring. Verify the component's usage instructions before implementing."
-        },
-        {
-          "path": "frontend/src/utils/time.ts",
-          "operation": "create",
-          "description": "Add a small utility to format backend Time (bigint nanoseconds) into readable date/time strings for displaying Check-in history and admin monitoring. Verify the component's usage instructions before implementing."
-        }
-      ]
-    },
-    {
-      "id": "REQ-8",
-      "summary": "Add Principal Check-out submission UI and history view using existing backend Check-out capabilities (server timestamp stored by backend).",
-      "acceptanceCriteria": [
-        "Principal users can submit a Check-out event via a dedicated UI action (separate from Daily Activity submission).",
-        "The backend stores the Check-out timestamp using server time (Time.now()), not a client-provided timestamp.",
-        "Principals can fetch and view their own Check-out submissions history (at minimum: most recent Check-out time; optionally a list).",
-        "Director/Management users can fetch Check-out submissions across principals (at minimum: included in admin queries; optionally displayed in the monitoring UI).",
-        "Unauthorized callers (non-Principal for submit; non-Admin for cross-principal reads) are rejected consistently with existing access control patterns."
-      ],
-      "file_operations": [
-        {
-          "path": "frontend/src/hooks/useQueries.ts",
-          "operation": "modify",
-          "description": "Add react-query hooks for Check-out flows: mutation for adding a Check-out, query for fetching caller Check-outs, and admin query for fetching all Check-outs; ensure errors are surfaced for unauthorized calls. Verify the component's usage instructions before implementing."
-        },
-        {
-          "path": "frontend/src/pages/PrincipalCheckOutPage.tsx",
-          "operation": "create",
-          "description": "Create a Principal-only Check-out page with a dedicated submit action (detail text input optional) and success/error feedback; include a history section showing most recent (and optionally a list) of the caller's Check-outs using the new query hooks. Verify the component's usage instructions before implementing."
-        },
-        {
-          "path": "frontend/src/pages/MonitoringDashboardPage.tsx",
-          "operation": "modify",
-          "description": "Extend the admin monitoring UI to optionally display Check-out activity across principals by consuming the admin Check-out query hook and rendering a compact summary/list/table without changing KPI scoring. Verify the component's usage instructions before implementing."
-        },
-        {
-          "path": "frontend/src/utils/time.ts",
-          "operation": "modify",
-          "description": "Reuse/extend the Time formatting utility to support Check-out history and monitoring displays. Verify the component's usage instructions before implementing."
-        }
-      ]
-    },
-    {
-      "id": "REQ-9",
-      "summary": "Update Daily Activity frontend to avoid client timestamp dependence and rename all user-facing “QPC” labels to “Qur’anic Parenting Center” while keeping underlying keys/scoring unchanged.",
-      "acceptanceCriteria": [
-        "When a Daily Activity submission is created, the stored timestamp reflects server time at submission (backend Time.now()), regardless of any client-provided value.",
-        "The KPI scoring remains equal-weighted across 6 activities totaling 100 points/day, unchanged from current behavior.",
-        "All user-facing labels that currently show “QPC” are updated to “Qur’anic Parenting Center” (including the activity checklist and KPI breakdown displays where applicable).",
-        "No existing monitoring calculations break due to the label change (i.e., the underlying activity key remains compatible with current computations)."
-      ],
-      "file_operations": [
-        {
-          "path": "frontend/src/pages/PrincipalDailyFormPage.tsx",
-          "operation": "modify",
-          "description": "Remove reliance on client-generated timestamps for Daily Activity submissions by no longer setting report.time using Date.now (use a neutral placeholder value so backend server time remains authoritative); keep KPI model/fields unchanged and ensure UI text remains English. Verify the component's usage instructions before implementing."
-        },
         {
           "path": "frontend/src/lib/kpi.ts",
           "operation": "modify",
-          "description": "Update the activity label/description for the existing 'qpc' activity to display “Qur’anic Parenting Center” (and adjust any related wording) while keeping the activity key as 'qpc' and points/scoring logic unchanged. Verify the component's usage instructions before implementing."
+          "description": "Remove the hardcoded \"Teacher Attendance Check\" activity and refactor KPI activity metadata/utilities to operate on exactly 5 visible activities (aligned with the existing KPIConfig model), ensuring all helpers only expose these 5 items to the UI."
         },
         {
-          "path": "frontend/src/components/monitoring/KPITable.tsx",
+          "path": "frontend/src/pages/PrincipalDailyFormPage.tsx",
           "operation": "modify",
-          "description": "Rename the KPI table column header currently shown as “QPC” to “Qur’anic Parenting Center” while keeping the same underlying KPI field mapping so calculations remain compatible. Verify the component's usage instructions before implementing."
+          "description": "Update the Daily Activity Form UI to render exactly 5 activity options sourced from the updated KPI activity metadata/utilities, and ensure no UI copy mentions the removed activity."
+        },
+        {
+          "path": "frontend/src/components/kpi/DailyActivityWeightsCard.tsx",
+          "operation": "modify",
+          "description": "Update the KPI weights card to display exactly 5 activity rows (no removed activity row) and keep all user-facing text in English."
         },
         {
           "path": "frontend/src/components/kpi/KPIScoreBadge.tsx",
           "operation": "modify",
-          "description": "If KPI breakdown labels expose 'qpc' (or 'health' mapping) in a user-facing way, adjust the rendering to show “Qur’anic Parenting Center” where applicable without changing the underlying KPI computation model. Verify the component's usage instructions before implementing."
+          "description": "Update KPI preview/badge rendering so the breakdown reflects exactly 5 visible activities and cannot display the removed activity."
+        },
+        {
+          "path": "frontend/src/components/monitoring/KPITable.tsx",
+          "operation": "modify",
+          "description": "Update the Monitoring KPI table to render exactly 5 activity columns and remove any reference/labeling for the removed activity."
         }
       ]
     },
     {
-      "id": "REQ-10",
-      "summary": "Add Principal navigation and routes for three separate submission flows: Check-in, Daily Activities, and Check-out, with role-gated access and feedback per flow.",
+      "id": "REQ-2",
+      "summary": "Keep Daily Activity submissions compatible with the existing backend submission type by always submitting the removed activity fields as neutral/disabled values and excluding them from KPI previews and UI state resets.",
       "acceptanceCriteria": [
-        "The app provides clear navigation for Principal users to reach: Check-in form/action, Daily Activity form, and Check-out form/action.",
-        "Each of the three flows has its own submit button and success/error feedback.",
-        "Existing role-gating remains intact: Principal can access the submission routes; Director/Management cannot access Principal-only submit routes."
+        "Submitting a Daily Activity report still succeeds without requiring the removed activity, and the computed KPI preview matches the 5 visible activities only.",
+        "After submission, the UI resets only the 5 visible activities (no hidden/removed activity state remains)."
       ],
       "file_operations": [
         {
-          "path": "frontend/src/App.tsx",
-          "operation": "modify",
-          "description": "Register new routes for Principal Check-in and Principal Check-out pages, keeping Daily Activities as its own route; wrap Principal submission routes with the existing RoleGate (allowedRoles: user) so Director/Management cannot access them. Verify the component's usage instructions before implementing."
-        },
-        {
-          "path": "frontend/src/components/layout/AppShell.tsx",
-          "operation": "modify",
-          "description": "Update the Principal navigation to include three clear actions: Check-in, Daily Activities, and Check-out; ensure admin-only navigation remains limited to Monitoring and that Principal-only buttons do not appear for admins. Verify the component's usage instructions before implementing."
-        },
-        {
-          "path": "frontend/src/pages/PrincipalCheckInPage.tsx",
-          "operation": "modify",
-          "description": "Ensure the Check-in page provides its own submit button plus success/error feedback, consistent with the Daily Activities form interaction patterns. Verify the component's usage instructions before implementing."
-        },
-        {
           "path": "frontend/src/pages/PrincipalDailyFormPage.tsx",
           "operation": "modify",
-          "description": "Ensure the Daily Activities page remains a standalone submit flow with clear success/error feedback in English (no consolidation with Check-in/Check-out). Verify the component's usage instructions before implementing."
+          "description": "Adjust the submission payload construction to always submit the removed activity’s backend fields as neutral/disabled values (e.g., rating 0 and a safe string) while mapping only the 5 visible activities from UI state into the remaining fields; ensure post-submit reset clears only the 5 visible activity states."
         },
         {
-          "path": "frontend/src/pages/PrincipalCheckOutPage.tsx",
+          "path": "frontend/src/lib/kpi.ts",
           "operation": "modify",
-          "description": "Ensure the Check-out page provides its own submit button plus success/error feedback, consistent with the Daily Activities form interaction patterns. Verify the component's usage instructions before implementing."
+          "description": "Update KPI preview computation to sum only the 5 visible activities so removed/neutral fields never affect the computed KPI preview."
+        }
+      ]
+    },
+    {
+      "id": "REQ-3",
+      "summary": "Allow Admin and Director users to edit KPI Daily Activity configuration (5 items/weights) with a save flow, while keeping non-Admin/Director users view-only and surfacing authorization errors in English.",
+      "acceptanceCriteria": [
+        "Users who are Admin or Director can access an editable KPI configuration UI (inputs + save flow).",
+        "Non-Admin/Director users can view the KPI configuration but cannot enter edit mode or save changes.",
+        "Unauthorized backend calls to update KPI configuration return an authorization error that is surfaced in the UI as an English error message."
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/pages/MonitoringDashboardPage.tsx",
+          "operation": "modify",
+          "description": "Adjust role gating for the KPI configuration editor so both Admin and Director can edit (not only Director); continue to keep unauthorized users from seeing edit controls. Use the authorization component’s role-based access expectations for UI gating and error handling; verify the component's usage instructions before implementing."
+        },
+        {
+          "path": "frontend/src/components/kpi/DailyActivityWeightsCard.tsx",
+          "operation": "modify",
+          "description": "Extend the weights card to support editing within the existing KPIConfig model for the 5 activities (e.g., editing names/weights/active flags if supported by the UI), including a save/cancel flow and English error messaging when save fails due to authorization. Verify the component's usage instructions before implementing (authorization-related UI expectations)."
+        },
+        {
+          "path": "frontend/src/hooks/useQueries.ts",
+          "operation": "modify",
+          "description": "Ensure the KPI config update hook continues to convert authorization failures into a clear English error message for the UI to surface (and that the monitoring page uses that message). Verify the component's usage instructions before implementing (authorization-related error handling expectations)."
+        }
+      ]
+    },
+    {
+      "id": "REQ-4",
+      "summary": "Enforce the 5-item KPI configuration limit in the UI: validate totals using only the 5 visible activities (must total 100) and ensure all KPI previews/badges/tables exclude the removed activity and treat its contribution as 0.",
+      "acceptanceCriteria": [
+        "The KPI weights editor validates totals using only the 5 visible activities (must equal 100 with a small tolerance) and does not block saves due to the hidden/removed weight field.",
+        "On save, the backend persists configuration such that the removed activity's weight is forced to 0 (even if a client attempts to set it non-zero).",
+        "KPI preview/badges/table calculations do not show or include the removed activity as a separate line item, and its contribution is always 0."
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/components/kpi/DailyActivityWeightsCard.tsx",
+          "operation": "modify",
+          "description": "Update validation logic to compute totals using only the 5 visible activity weights (with small tolerance to 100) and prevent any UI from editing/setting a removed activity weight; keep user-facing validation text in English."
+        },
+        {
+          "path": "frontend/src/lib/kpi.ts",
+          "operation": "modify",
+          "description": "Ensure KPI preview and per-activity points helpers only operate on the 5 visible activities so the removed activity never appears and always contributes 0 in client-side calculations."
+        },
+        {
+          "path": "frontend/src/components/monitoring/KPITable.tsx",
+          "operation": "modify",
+          "description": "Ensure monitoring KPI calculations and per-activity score rendering exclude the removed activity entirely (no column/line item) and totals reflect only the intended dimensions shown in the UI."
+        },
+        {
+          "path": "frontend/src/components/kpi/KPIScoreBadge.tsx",
+          "operation": "modify",
+          "description": "Ensure KPI preview/badges breakdown rendering reflects exactly 5 activities and cannot display/include the removed activity as a separate line item."
         }
       ]
     }

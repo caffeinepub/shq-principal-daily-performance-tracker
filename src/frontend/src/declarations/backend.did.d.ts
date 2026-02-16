@@ -10,7 +10,11 @@ import type { ActorMethod } from '@icp-sdk/core/agent';
 import type { IDL } from '@icp-sdk/core/candid';
 import type { Principal } from '@icp-sdk/core/principal';
 
-export interface CheckIn { 'time' : Time, 'detail' : string }
+export interface CheckIn {
+  'time' : Time,
+  'detail' : string,
+  'photo' : [] | [string],
+}
 export interface CheckOut { 'time' : Time, 'detail' : string }
 export interface DailyReport {
   'focus' : string,
@@ -33,6 +37,23 @@ export type Dedication = { 'sales' : null } |
   { 'technology' : null } |
   { 'leadership' : null };
 export interface InputProfile { 'name' : string, 'dedication' : Dedication }
+export interface KPIConfig {
+  'activity2name' : string,
+  'activity1weight' : number,
+  'activity1active' : boolean,
+  'activity4name' : string,
+  'activity2weight' : number,
+  'activity2active' : boolean,
+  'activity3weight' : number,
+  'activity1name' : string,
+  'activity3active' : boolean,
+  'activity4weight' : number,
+  'activity3name' : string,
+  'activity4active' : boolean,
+  'activity5weight' : number,
+  'activity5name' : string,
+  'activity5active' : boolean,
+}
 export interface KPITally {
   'focus' : number,
   'habit' : number,
@@ -57,15 +78,21 @@ export interface UserProfile { 'name' : string, 'dedication' : Dedication }
 export type UserRole = { 'admin' : null } |
   { 'user' : null } |
   { 'guest' : null };
+export interface UserWithRole {
+  'principal' : Principal,
+  'role' : UserRole,
+  'profile' : [] | [UserProfile],
+}
 export interface _SERVICE {
   '_initializeAccessControlWithSecret' : ActorMethod<[string], undefined>,
-  'addCheckIn' : ActorMethod<[string], undefined>,
+  'addCheckIn' : ActorMethod<[string, [] | [string]], undefined>,
   'addCheckOut' : ActorMethod<[string], undefined>,
   'addSubmission' : ActorMethod<
     [DailyReport, string, string, string, number, number],
     undefined
   >,
   'assignCallerUserRole' : ActorMethod<[Principal, UserRole], undefined>,
+  'deleteUser' : ActorMethod<[Principal], undefined>,
   'getAllCheckIns' : ActorMethod<[], Array<[Principal, Array<CheckIn>]>>,
   'getAllCheckOuts' : ActorMethod<[], Array<[Principal, Array<CheckOut>]>>,
   'getAllSubmissions' : ActorMethod<[], Array<[Principal, Array<Submission>]>>,
@@ -74,6 +101,7 @@ export interface _SERVICE {
   'getCallerUserRole' : ActorMethod<[], UserRole>,
   'getCheckIns' : ActorMethod<[], Array<CheckIn>>,
   'getCheckOuts' : ActorMethod<[], Array<CheckOut>>,
+  'getKPIConfig' : ActorMethod<[], KPIConfig>,
   'getPublicProfile' : ActorMethod<[], UserProfile>,
   'getSubmissionCount' : ActorMethod<[], bigint>,
   'getSubmissions' : ActorMethod<[], Array<Submission>>,
@@ -81,8 +109,11 @@ export interface _SERVICE {
   'getUserProfile' : ActorMethod<[Principal], [] | [UserProfile]>,
   'getUserSubmissions' : ActorMethod<[Principal], Array<Submission>>,
   'isCallerAdmin' : ActorMethod<[], boolean>,
+  'listUsersWithRoles' : ActorMethod<[], Array<UserWithRole>>,
   'saveCallerUserProfile' : ActorMethod<[InputProfile], undefined>,
   'saveUserProfile' : ActorMethod<[InputProfile], undefined>,
+  'updateKPIConfig' : ActorMethod<[KPIConfig], undefined>,
+  'updateUserRole' : ActorMethod<[Principal, UserRole], undefined>,
 }
 export declare const idlService: IDL.ServiceClass;
 export declare const idlInitArgs: IDL.Type[];

@@ -16,7 +16,7 @@ export default function LoginPage() {
             <ClipboardCheck className="w-8 h-8 text-white" />
           </div>
           <div>
-            <CardTitle className="text-2xl font-bold">SHQ Principal Tracker</CardTitle>
+            <CardTitle className="text-2xl font-bold">SHQ KepSek Tracker</CardTitle>
             <CardDescription className="mt-2">
               Daily Performance Monitoring System
             </CardDescription>
@@ -30,7 +30,7 @@ export default function LoginPage() {
             </div>
             <div className="flex items-start gap-3">
               <ClipboardCheck className="w-5 h-5 text-teal-600 mt-0.5 flex-shrink-0" />
-              <p>Monitor performance across all principals in real-time</p>
+              <p>Monitor performance across all KepSeks in real-time</p>
             </div>
           </div>
           <Button

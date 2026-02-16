@@ -2,53 +2,11 @@
   "kind": "feature_evidence_report",
   "features": [
     {
-      "featureId": "feature-add-a-new-check-in-submission-feature-that-is-stored-separately-from-the-existing-daily-activity-submission-where-the-timestamp-is-generated-on-the-backend-server-time-at-the-moment-of-submission",
-      "featureTitle": "Add a new Check-in submission feature that is stored separately from the existing Daily Activity submission, where the timestamp is generated on the backend (server time) at the moment of submission.",
+      "featureId": "feature-remove-the-teacher-attendance-check-daily-activity-from-the-kpi-daily-activities-feature-so-that-only-5-daily-activities-are-shown-across-the-app-daily-activity-form-kpi-preview-badges-monitoring-kpi-table-and-kpi-weights-card",
+      "featureTitle": "Remove the \"Teacher Attendance Check\" daily activity from the KPI Daily Activities feature so that only 5 daily activities are shown across the app (Daily Activity Form, KPI preview/badges, Monitoring KPI table, and KPI weights card).",
       "files": [
-        "frontend/src/hooks/useQueries.ts",
-        "frontend/src/pages/MonitoringDashboardPage.tsx",
-        "frontend/src/pages/PrincipalCheckInPage.tsx",
-        "frontend/src/utils/time.ts"
-      ],
-      "components": [
-        "authorization@4.0.0",
-        "core-infrastructure@1.0.2",
-        "shadcn-ui@1.0.0",
-        "build-template-react@1.0.0",
-        "initial-app@1.0.0",
-        "github-export-icp-cli@1.0.0"
-      ],
-      "testIds": [
-        "REQ-7"
-      ],
-      "confidence": "high"
-    },
-    {
-      "featureId": "feature-add-a-new-check-out-submission-feature-that-is-stored-separately-from-the-existing-daily-activity-submission-where-the-timestamp-is-generated-on-the-backend-server-time-at-the-moment-of-submission",
-      "featureTitle": "Add a new Check-out submission feature that is stored separately from the existing Daily Activity submission, where the timestamp is generated on the backend (server time) at the moment of submission.",
-      "files": [
-        "frontend/src/hooks/useQueries.ts",
-        "frontend/src/pages/MonitoringDashboardPage.tsx",
-        "frontend/src/pages/PrincipalCheckOutPage.tsx",
-        "frontend/src/utils/time.ts"
-      ],
-      "components": [
-        "authorization@4.0.0",
-        "core-infrastructure@1.0.2",
-        "shadcn-ui@1.0.0",
-        "build-template-react@1.0.0",
-        "initial-app@1.0.0",
-        "github-export-icp-cli@1.0.0"
-      ],
-      "testIds": [
-        "REQ-8"
-      ],
-      "confidence": "high"
-    },
-    {
-      "featureId": "feature-ensure-the-existing-daily-activity-submission-uses-a-backend-generated-server-timestamp-and-update-the-qpc-activity-label-to-qur-anic-parenting-center-no-kpi-scoring-logic-changes",
-      "featureTitle": "Ensure the existing Daily Activity submission uses a backend-generated server timestamp, and update the QPC activity label to “Qur’anic Parenting Center” (no KPI/scoring logic changes).",
-      "files": [
+        "frontend/src/components/kpi/DailyActivityWeightsCard.tsx",
+        "frontend/src/components/kpi/KPIScoreBadge.tsx",
         "frontend/src/components/monitoring/KPITable.tsx",
         "frontend/src/lib/kpi.ts",
         "frontend/src/pages/PrincipalDailyFormPage.tsx"
@@ -62,18 +20,15 @@
         "github-export-icp-cli@1.0.0"
       ],
       "testIds": [
-        "REQ-9"
+        "REQ-1"
       ],
       "confidence": "high"
     },
     {
-      "featureId": "feature-add-navigation-and-routes-so-principals-can-access-three-separate-submission-actions-pages-check-in-daily-activities-and-check-out-each-with-its-own-submit-flow",
-      "featureTitle": "Add navigation and routes so Principals can access three separate submission actions/pages: Check-in, Daily Activities, and Check-out, each with its own submit flow.",
+      "featureId": "feature-update-the-daily-activity-submission-flow-so-it-remains-compatible-with-the-existing-backend-submission-type-while-the-removed-activity-is-no-longer-user-editable-ensure-any-removed-activity-fields-are-always-submitted-as-a-neutral-disabled-value-e-g-rating-0-and-a-safe-string-and-do-not-affect-kpi-previews",
+      "featureTitle": "Update the Daily Activity submission flow so it remains compatible with the existing backend submission type while the removed activity is no longer user-editable: ensure any removed-activity fields are always submitted as a neutral/disabled value (e.g., rating 0 and a safe string) and do not affect KPI previews.",
       "files": [
-        "frontend/src/App.tsx",
-        "frontend/src/components/layout/AppShell.tsx",
-        "frontend/src/pages/PrincipalCheckInPage.tsx",
-        "frontend/src/pages/PrincipalCheckOutPage.tsx",
+        "frontend/src/lib/kpi.ts",
         "frontend/src/pages/PrincipalDailyFormPage.tsx"
       ],
       "components": [
@@ -85,7 +40,49 @@
         "github-export-icp-cli@1.0.0"
       ],
       "testIds": [
-        "REQ-10"
+        "REQ-2"
+      ],
+      "confidence": "high"
+    },
+    {
+      "featureId": "feature-allow-both-admin-and-director-roles-to-edit-kpi-daily-activity-configuration-the-5-visible-daily-activity-kpi-items-weights-including-add-edit-capability-within-the-supported-configuration-model-and-ensure-non-admin-director-users-remain-view-only",
+      "featureTitle": "Allow both Admin and Director roles to edit KPI Daily Activity configuration (the 5 visible daily activity KPI items/weights), including add/edit capability within the supported configuration model, and ensure non-Admin/Director users remain view-only.",
+      "files": [
+        "frontend/src/components/kpi/DailyActivityWeightsCard.tsx",
+        "frontend/src/pages/MonitoringDashboardPage.tsx"
+      ],
+      "components": [
+        "authorization@4.0.0",
+        "core-infrastructure@1.0.2",
+        "shadcn-ui@1.0.0",
+        "build-template-react@1.0.0",
+        "initial-app@1.0.0",
+        "github-export-icp-cli@1.0.0"
+      ],
+      "testIds": [
+        "REQ-3"
+      ],
+      "confidence": "high"
+    },
+    {
+      "featureId": "feature-enforce-the-5-item-limit-at-the-kpi-configuration-level-by-treating-the-removed-activity-s-weight-as-non-editable-and-effectively-disabled-the-system-must-ensure-the-removed-activity-contributes-0-points-and-the-remaining-5-activity-weights-must-total-100",
+      "featureTitle": "Enforce the 5-item limit at the KPI configuration level by treating the removed activity's weight as non-editable and effectively disabled: the system must ensure the removed activity contributes 0 points and the remaining 5 activity weights must total 100.",
+      "files": [
+        "frontend/src/components/kpi/DailyActivityWeightsCard.tsx",
+        "frontend/src/components/kpi/KPIScoreBadge.tsx",
+        "frontend/src/components/monitoring/KPITable.tsx",
+        "frontend/src/lib/kpi.ts"
+      ],
+      "components": [
+        "authorization@4.0.0",
+        "core-infrastructure@1.0.2",
+        "shadcn-ui@1.0.0",
+        "build-template-react@1.0.0",
+        "initial-app@1.0.0",
+        "github-export-icp-cli@1.0.0"
+      ],
+      "testIds": [
+        "REQ-4"
       ],
       "confidence": "high"
     }

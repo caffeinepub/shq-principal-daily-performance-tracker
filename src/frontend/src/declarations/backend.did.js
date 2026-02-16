@@ -36,7 +36,11 @@ export const UserRole = IDL.Variant({
   'user' : IDL.Null,
   'guest' : IDL.Null,
 });
-export const CheckIn = IDL.Record({ 'time' : Time, 'detail' : IDL.Text });
+export const CheckIn = IDL.Record({
+  'time' : Time,
+  'detail' : IDL.Text,
+  'photo' : IDL.Opt(IDL.Text),
+});
 export const CheckOut = IDL.Record({ 'time' : Time, 'detail' : IDL.Text });
 export const KPITally = IDL.Record({
   'focus' : IDL.Float64,
@@ -64,6 +68,28 @@ export const UserProfile = IDL.Record({
   'name' : IDL.Text,
   'dedication' : Dedication,
 });
+export const KPIConfig = IDL.Record({
+  'activity2name' : IDL.Text,
+  'activity1weight' : IDL.Float64,
+  'activity1active' : IDL.Bool,
+  'activity4name' : IDL.Text,
+  'activity2weight' : IDL.Float64,
+  'activity2active' : IDL.Bool,
+  'activity3weight' : IDL.Float64,
+  'activity1name' : IDL.Text,
+  'activity3active' : IDL.Bool,
+  'activity4weight' : IDL.Float64,
+  'activity3name' : IDL.Text,
+  'activity4active' : IDL.Bool,
+  'activity5weight' : IDL.Float64,
+  'activity5name' : IDL.Text,
+  'activity5active' : IDL.Bool,
+});
+export const UserWithRole = IDL.Record({
+  'principal' : IDL.Principal,
+  'role' : UserRole,
+  'profile' : IDL.Opt(UserProfile),
+});
 export const InputProfile = IDL.Record({
   'name' : IDL.Text,
   'dedication' : Dedication,
@@ -71,7 +97,7 @@ export const InputProfile = IDL.Record({
 
 export const idlService = IDL.Service({
   '_initializeAccessControlWithSecret' : IDL.Func([IDL.Text], [], []),
-  'addCheckIn' : IDL.Func([IDL.Text], [], []),
+  'addCheckIn' : IDL.Func([IDL.Text, IDL.Opt(IDL.Text)], [], []),
   'addCheckOut' : IDL.Func([IDL.Text], [], []),
   'addSubmission' : IDL.Func(
       [DailyReport, IDL.Text, IDL.Text, IDL.Text, IDL.Float64, IDL.Float64],
@@ -79,6 +105,7 @@ export const idlService = IDL.Service({
       [],
     ),
   'assignCallerUserRole' : IDL.Func([IDL.Principal, UserRole], [], []),
+  'deleteUser' : IDL.Func([IDL.Principal], [], []),
   'getAllCheckIns' : IDL.Func(
       [],
       [IDL.Vec(IDL.Tuple(IDL.Principal, IDL.Vec(CheckIn)))],
@@ -103,6 +130,7 @@ export const idlService = IDL.Service({
   'getCallerUserRole' : IDL.Func([], [UserRole], ['query']),
   'getCheckIns' : IDL.Func([], [IDL.Vec(CheckIn)], ['query']),
   'getCheckOuts' : IDL.Func([], [IDL.Vec(CheckOut)], ['query']),
+  'getKPIConfig' : IDL.Func([], [KPIConfig], ['query']),
   'getPublicProfile' : IDL.Func([], [UserProfile], ['query']),
   'getSubmissionCount' : IDL.Func([], [IDL.Nat], ['query']),
   'getSubmissions' : IDL.Func([], [IDL.Vec(Submission)], ['query']),
@@ -118,8 +146,11 @@ export const idlService = IDL.Service({
       ['query'],
     ),
   'isCallerAdmin' : IDL.Func([], [IDL.Bool], ['query']),
+  'listUsersWithRoles' : IDL.Func([], [IDL.Vec(UserWithRole)], ['query']),
   'saveCallerUserProfile' : IDL.Func([InputProfile], [], []),
   'saveUserProfile' : IDL.Func([InputProfile], [], []),
+  'updateKPIConfig' : IDL.Func([KPIConfig], [], []),
+  'updateUserRole' : IDL.Func([IDL.Principal, UserRole], [], []),
 });
 
 export const idlInitArgs = [];
@@ -153,7 +184,11 @@ export const idlFactory = ({ IDL }) => {
     'user' : IDL.Null,
     'guest' : IDL.Null,
   });
-  const CheckIn = IDL.Record({ 'time' : Time, 'detail' : IDL.Text });
+  const CheckIn = IDL.Record({
+    'time' : Time,
+    'detail' : IDL.Text,
+    'photo' : IDL.Opt(IDL.Text),
+  });
   const CheckOut = IDL.Record({ 'time' : Time, 'detail' : IDL.Text });
   const KPITally = IDL.Record({
     'focus' : IDL.Float64,
@@ -181,6 +216,28 @@ export const idlFactory = ({ IDL }) => {
     'name' : IDL.Text,
     'dedication' : Dedication,
   });
+  const KPIConfig = IDL.Record({
+    'activity2name' : IDL.Text,
+    'activity1weight' : IDL.Float64,
+    'activity1active' : IDL.Bool,
+    'activity4name' : IDL.Text,
+    'activity2weight' : IDL.Float64,
+    'activity2active' : IDL.Bool,
+    'activity3weight' : IDL.Float64,
+    'activity1name' : IDL.Text,
+    'activity3active' : IDL.Bool,
+    'activity4weight' : IDL.Float64,
+    'activity3name' : IDL.Text,
+    'activity4active' : IDL.Bool,
+    'activity5weight' : IDL.Float64,
+    'activity5name' : IDL.Text,
+    'activity5active' : IDL.Bool,
+  });
+  const UserWithRole = IDL.Record({
+    'principal' : IDL.Principal,
+    'role' : UserRole,
+    'profile' : IDL.Opt(UserProfile),
+  });
   const InputProfile = IDL.Record({
     'name' : IDL.Text,
     'dedication' : Dedication,
@@ -188,7 +245,7 @@ export const idlFactory = ({ IDL }) => {
   
   return IDL.Service({
     '_initializeAccessControlWithSecret' : IDL.Func([IDL.Text], [], []),
-    'addCheckIn' : IDL.Func([IDL.Text], [], []),
+    'addCheckIn' : IDL.Func([IDL.Text, IDL.Opt(IDL.Text)], [], []),
     'addCheckOut' : IDL.Func([IDL.Text], [], []),
     'addSubmission' : IDL.Func(
         [DailyReport, IDL.Text, IDL.Text, IDL.Text, IDL.Float64, IDL.Float64],
@@ -196,6 +253,7 @@ export const idlFactory = ({ IDL }) => {
         [],
       ),
     'assignCallerUserRole' : IDL.Func([IDL.Principal, UserRole], [], []),
+    'deleteUser' : IDL.Func([IDL.Principal], [], []),
     'getAllCheckIns' : IDL.Func(
         [],
         [IDL.Vec(IDL.Tuple(IDL.Principal, IDL.Vec(CheckIn)))],
@@ -220,6 +278,7 @@ export const idlFactory = ({ IDL }) => {
     'getCallerUserRole' : IDL.Func([], [UserRole], ['query']),
     'getCheckIns' : IDL.Func([], [IDL.Vec(CheckIn)], ['query']),
     'getCheckOuts' : IDL.Func([], [IDL.Vec(CheckOut)], ['query']),
+    'getKPIConfig' : IDL.Func([], [KPIConfig], ['query']),
     'getPublicProfile' : IDL.Func([], [UserProfile], ['query']),
     'getSubmissionCount' : IDL.Func([], [IDL.Nat], ['query']),
     'getSubmissions' : IDL.Func([], [IDL.Vec(Submission)], ['query']),
@@ -235,8 +294,11 @@ export const idlFactory = ({ IDL }) => {
         ['query'],
       ),
     'isCallerAdmin' : IDL.Func([], [IDL.Bool], ['query']),
+    'listUsersWithRoles' : IDL.Func([], [IDL.Vec(UserWithRole)], ['query']),
     'saveCallerUserProfile' : IDL.Func([InputProfile], [], []),
     'saveUserProfile' : IDL.Func([InputProfile], [], []),
+    'updateKPIConfig' : IDL.Func([KPIConfig], [], []),
+    'updateUserRole' : IDL.Func([IDL.Principal, UserRole], [], []),
   });
 };
 

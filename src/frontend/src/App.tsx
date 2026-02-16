@@ -1,7 +1,7 @@
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { createRouter, createRoute, createRootRoute, RouterProvider, Outlet } from '@tanstack/react-router';
 import { useInternetIdentity } from './hooks/useInternetIdentity';
-import { useGetCallerUserProfile } from './hooks/useQueries';
+import { useGetCallerUserProfile, useGetCallerUserRole } from './hooks/useQueries';
 import AppShell from './components/layout/AppShell';
 import LoginPage from './pages/LoginPage';
 import ProfileSetupDialog from './components/auth/ProfileSetupDialog';
@@ -9,6 +9,7 @@ import PrincipalCheckInPage from './pages/PrincipalCheckInPage';
 import PrincipalDailyFormPage from './pages/PrincipalDailyFormPage';
 import PrincipalCheckOutPage from './pages/PrincipalCheckOutPage';
 import MonitoringDashboardPage from './pages/MonitoringDashboardPage';
+import UserSettingsPage from './pages/UserSettingsPage';
 import RoleGate from './components/auth/RoleGate';
 import { ThemeProvider } from 'next-themes';
 import { Toaster } from '@/components/ui/sonner';
@@ -88,7 +89,25 @@ const monitoringRoute = createRoute({
   },
 });
 
-const routeTree = rootRoute.addChildren([checkInRoute, dailyActivitiesRoute, checkOutRoute, monitoringRoute]);
+const userSettingsRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: '/user-settings',
+  component: () => {
+    return (
+      <RoleGate allowedRoles={[UserRole.admin]} requireDirector>
+        <UserSettingsPage />
+      </RoleGate>
+    );
+  },
+});
+
+const routeTree = rootRoute.addChildren([
+  checkInRoute,
+  dailyActivitiesRoute,
+  checkOutRoute,
+  monitoringRoute,
+  userSettingsRoute,
+]);
 
 const router = createRouter({ routeTree });
 
